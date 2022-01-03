@@ -4,6 +4,7 @@ import argparse
 import configparser
 from backlog_issues import Issues
 from backlog_retrospective import RetroBoard
+from backlog_githubrequest import print_reqeust_counts
 
 
 __location__ = os.path.realpath(os.path.join(
@@ -119,5 +120,5 @@ if __name__ == '__main__':
         issue_manager = Issues(config, issue_ids)
         issue_manager.migrate_issues()
 
-
+    print_reqeust_counts()
 
