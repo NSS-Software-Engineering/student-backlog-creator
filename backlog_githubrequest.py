@@ -2,6 +2,18 @@ import base64
 import requests
 import json
 import time
+from pprint import pprint
+from collections import defaultdict
+
+# globally record request counts by reponse status code
+request_counts = defaultdict(int)
+
+def print_reqeust_counts():
+    print("\nCurrent Global Reuqest Counts by Response Status:")
+    for status, count in request_counts.items():
+        print(f"{status}:   {count}")
+
+    print(f"Total: {sum(request_counts.values())}")
 
 class GithubRequest(object):
     def __init__(self, config):
@@ -36,12 +48,25 @@ class GithubRequest(object):
         retry_after_seconds = 30
 
         response = request()
+        request_counts[response.status_code] += 1
 
         while response.status_code == 403:
-            print(f"\n--- Got a 403 from Github. Sleeping for {retry_after_seconds} seconds ---")
+            print("\n--- Got a 403 from Github ---")
+
+            print("--- Response Headers ---")
+            pprint(response.headers)
+
+            print("\n--- Response Body ---")
+            pprint(response.json())
+
+            print_reqeust_counts()
+
+            print(f"\n--- Sleeping for {retry_after_seconds} seconds ---")
             self.sleep_with_countdown(retry_after_seconds)
 
             response = request()
+            request_counts[response.status_code] += 1
+
 
         return response
 
