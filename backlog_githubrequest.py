@@ -15,6 +15,7 @@ def print_reqeust_counts():
 
     print(f"Total: {sum(request_counts.values())}")
 
+
 class GithubRequest(object):
     def __init__(self, config):
         self.config = config
