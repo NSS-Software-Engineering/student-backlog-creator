@@ -40,6 +40,9 @@ class Issues(object):
             template_data['body'] = issue['body']
 
             new_issue['body'] = self.format_issue(template_data)
+            new_issue['labels'] = [i['name'] for i in issue['labels']]
+            if not new_issue['labels']:
+                new_issue['labels'] = ['enhancement']
             issues_to_migrate.append(new_issue)
 
         organized_issues = self.organize_issues(issues_to_migrate)
@@ -69,7 +72,6 @@ class Issues(object):
         print(f'You are about to migrate {len(issues)} new issues to {target}')
 
         for issue in issues:
-            issue['labels'] = ['enhancement']
             try:
                 res = self.grequest.post(url, issue)
                 result_issue = res.json()
